@@ -21,7 +21,7 @@ def parse_arguments():
         "--endpoint_ecr_image_path",
         type=str,
         help=" ",
-        default="251885400447.dkr.ecr.cn-northwest-1.amazonaws.com.cn/vgg16"
+        default="885692174401.dkr.ecr.ap-northeast-2.amazonaws.com/vgg16"
     )
     parser.add_argument(
         "-en",
