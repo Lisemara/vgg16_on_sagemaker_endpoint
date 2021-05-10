@@ -34,7 +34,8 @@ model_cloth = models.load_model('./clothes.h5')
 def get_cloth(image):
 
     # 이미지 resize
-    img = Image.open(io.BytesIO(Image))
+    decode_img = io.BytesIO(image)
+    img = Image.open(decode_img)
     img = img.convert("RGB")
     img = img.resize((150,150))
     data = np.asarray(img)
@@ -87,8 +88,9 @@ def invocations():
     download_file_name = image_uri.split('/')[-1]
     print ("<<<<download_file_name ", download_file_name)
 
-    file_obj = s3.get_object(Bucket=bucket, key=image_uri)
-    file_obj = file_obj["body"].read()
+    print (image_uri)
+    file_obj = s3.get_object(Bucket=bucket, Key=image_uri)
+    file_obj = file_obj["Body"].read()
     # s3_client.get_object(bucket, image_uri, download_file_name)
     #local test
     # download_file_name='./test_baji.jpg'
@@ -101,7 +103,7 @@ def invocations():
     model_cloth = './clothes.h5'
 
     #make inference
-    classes = get_cloth(file_obj)
+    classes = int(get_cloth(file_obj))
     print("image_path:{},label:{}".format(image_uri, classes))
     print ("Done inference! ")
     inference_result = {
@@ -111,3 +113,5 @@ def invocations():
 
 
     return flask.Response(response=_payload, status=200, mimetype='application/json')
+if __name__ == '__main__':
+  app.run(host="127.0.0.1", port="5000")
