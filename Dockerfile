@@ -1,5 +1,5 @@
 ARG REGISTRY_URI
-FROM ${REGISTRY_URI}/tensorflow-inference:2.3.2-gpu-py37-cu102-ubuntu18.04
+FROM ${REGISTRY_URI}/tensorflow-training:2.4.1-gpu-py37-cu110-ubuntu18.04
 
 RUN mkdir -p /opt/ml/model
 
