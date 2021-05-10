@@ -1,6 +1,6 @@
 ARG REGISTRY_URI
 # FROM ${REGISTRY_URI}/tensorflow-training:2.4.1-gpu-py37-cu110-ubuntu18.04
-FROM 763104351884.dkr.ecr.ap-northeast-2.amazonaws.com/tensorflow-training:2.4.1-gpu-py37-cu110-ubuntu18.04
+FROM 763104351884.dkr.ecr.ap-northeast-2.amazonaws.com/tensorflow-training:2.4.1-cpu-py37-ubuntu18.04
 
 WORKDIR /
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
