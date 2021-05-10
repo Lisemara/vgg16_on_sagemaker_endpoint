@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import io
 import sys
 import json
 import boto3
@@ -33,7 +34,7 @@ model_cloth = models.load_model('./clothes.h5')
 def get_cloth(image):
 
     # 이미지 resize
-    img = Image.open(image)
+    img = Image.open(io.BytesIO(Image))
     img = img.convert("RGB")
     img = img.resize((150,150))
     data = np.asarray(img)
@@ -52,7 +53,7 @@ def get_cloth(image):
 # The flask app for serving predictions
 app = flask.Flask(__name__)
 
-s3_client = boto3.client('s3')
+s3 = boto3.client('s3')
 
 @app.route('/ping', methods=['GET'])
 def ping():
@@ -86,7 +87,9 @@ def invocations():
     download_file_name = image_uri.split('/')[-1]
     print ("<<<<download_file_name ", download_file_name)
 
-    s3_client.download_file(bucket, image_uri, download_file_name)
+    file_obj = s3.get_object(Bucket=bucket, key=image_uri)
+    file_obj = file_obj["body"].read()
+    # s3_client.get_object(bucket, image_uri, download_file_name)
     #local test
     # download_file_name='./test_baji.jpg'
     print('Download finished!')
@@ -98,8 +101,8 @@ def invocations():
     model_cloth = './clothes.h5'
 
     #make inference
-    classes = get_cloth(download_file_name)
-    print("image_path:{},label:{}".format(download_file_name, classes))
+    classes = get_cloth(file_obj)
+    print("image_path:{},label:{}".format(image_uri, classes))
     print ("Done inference! ")
     inference_result = {
         'class':classes

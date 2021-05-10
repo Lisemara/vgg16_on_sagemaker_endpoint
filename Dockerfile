@@ -1,6 +1,18 @@
 ARG REGISTRY_URI
 FROM ${REGISTRY_URI}/tensorflow-training:2.4.1-gpu-py37-cu110-ubuntu18.04
 
+WORKDIR /
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN ./aws/install
+
+ARG AWS_DEFAULT_REGION
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ENV AWS_ACCESS_KEY_ID ${AWS_ACCESS_KEY_ID}
+ENV AWS_DEFAULT_REGION ${AWS_DEFAULT_REGION}
+ENV AWS_SECRET_ACCESS_KEY ${AWS_SECRET_ACCESS_KEY}
+
 RUN mkdir -p /opt/ml/model
 
 # COPY package/ /opt/ml/code/package/
