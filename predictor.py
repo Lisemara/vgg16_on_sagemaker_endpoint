@@ -30,6 +30,7 @@ import numpy as np
 # dataset의 종류 리스트
 print(os.getcwd())
 model_cloth = models.load_model('./clothes.h5')
+model_color = models.load_model('./color.h5')
 
 def get_cloth(image):
 
@@ -50,6 +51,27 @@ def get_cloth(image):
     # cloth = cloth_list[result]    # 한글로 반환
 
     return result
+
+def get_color(image):
+
+    # 이미지 resize
+    decode_img = io.BytesIO(image)
+    img = Image.open(decode_img)
+    img = img.convert("RGB")
+    img = img.resize((150,150))
+    data = np.asarray(img)
+
+    X = np.array(data)
+    X = X.astype("float") / 255
+    X = X.reshape(-1, 150, 150,3)
+
+    # 예측
+    pred = model_color.predict(X)  
+    result = np.argmax(pred)   # 예측 값중 가장 높은 클래스 반환
+    # color = color_list[result]    # 한글로 반환
+
+    return result
+
 
 # The flask app for serving predictions
 app = flask.Flask(__name__)
@@ -101,13 +123,16 @@ def invocations():
 
     #LOAD MODEL
     model_cloth = './clothes.h5'
+    model_color = './color.h5'
 
     #make inference
-    classes = int(get_cloth(file_obj))
-    print("image_path:{},label:{}".format(image_uri, classes))
+    cloth = int(get_cloth(file_obj))
+    color = int(get_color(file_obj))
+    print("image_path:{},label:{},label2:{}".format(image_uri, cloth, color))
     print ("Done inference! ")
     inference_result = {
-        'class':classes
+        'cloth':cloth,
+        'color':color
     }
     _payload = json.dumps(inference_result,ensure_ascii=False)
 
